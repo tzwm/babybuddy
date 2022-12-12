@@ -150,6 +150,44 @@ def card_feeding_day(context, child, end_date=None):
         "hide_empty": _hide_empty(context),
     }
 
+@register.inclusion_tag("cards/feeding_last_with_tags.html", takes_context=True)
+def card_feeding_last_only_formula(context, child):
+    instance = (
+        models.Feeding.objects.filter(child=child, type="formula")
+        .filter(**_filter_data_age(context))
+        .order_by("-end")
+        .first()
+    )
+    # import pdb; pdb.set_trace()
+    empty = not instance
+
+    return {
+        "type": "feeding",
+        "feeding": instance,
+        "empty": empty,
+        "hide_empty": _hide_empty(context),
+        "title": "Last Formula Feeding",
+    }
+
+@register.inclusion_tag("cards/feeding_last_with_tags.html", takes_context=True)
+def card_feeding_last_only_solid(context, child):
+    instance = (
+        models.Feeding.objects.filter(child=child, type="solid food")
+        .filter(**_filter_data_age(context))
+        .order_by("-end")
+        .first()
+    )
+    # import pdb; pdb.set_trace()
+    empty = not instance
+
+    return {
+        "type": "feeding",
+        "feeding": instance,
+        "empty": empty,
+        "hide_empty": _hide_empty(context),
+        "title": "Last Solid Feeding",
+    }
+
 
 @register.inclusion_tag("cards/feeding_last.html", takes_context=True)
 def card_feeding_last(context, child):
